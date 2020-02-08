@@ -1,0 +1,44 @@
+{
+  "name": "moxypassword",
+  "version": "0.4.9",
+  "private": false,
+  "description": "Moxy Password",
+  "main": "moxy-password.js",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.24",
+    "@types/sinon": "^7.5.1",
+    "chai": "^4.2.0",
+    "jest": "^24.9.0",
+    "sinon": "^7.5.0",
+    "ts-jest": "^24.2.0",
+    "tslint": "^5.20.1",
+    "typescript": "3.7.2"
+  },
+  "scripts": {
+    "test": "jest tests/*",
+    "build": "npm run build:main",
+    "build:main": "tsc moxy-password.ts",
+    "watch": "tsc -w moxy-password.ts",
+    "testb": "node moxy-password.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcmox/moxy-password.git"
+  },
+  "keywords": [
+    "moxy",
+    "password"
+  ],
+  "author": "Daniel Moxon (dancmox@comcast.net)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcmox/moxy-password/issues"
+  },
+  "homepage": "https://github.com/dcmox/moxy-password#readme",
+  "dependencies": {
+    "string-dist": "^1.0.0"
+  }
+}
