@@ -17,7 +17,7 @@ interface IMoxyPasswordResult {
 
 export default class MoxyPassword {
     public static generatePassword = (len: number = 10, charset: string = '!@#%=*_-~()+^23456789abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ'): string => {
-        return Array.from({length: len}, (c: any) => charset.charAt(Math.floor(Math.random() * charset.length)))
+        return Array.from({length: len}, (c: any) => charset.charAt(MoxyPassword._random(0, charset.length)))
             .join('')
     }
     public static isPasswordSafe(password: string, data?: IKeyValueObject | string[],
@@ -116,10 +116,10 @@ export default class MoxyPassword {
                 problems: rules,
                 recommendations: [
                     password.length <= 6
-                    ? password + '_' + MoxyPassword.generatePassword(8 - password.length - 1)
+                    ? password + '_' + MoxyPassword.generatePassword(10 - password.length - 1)
                         + Math.floor(Math.random() * 10)
-                    : MoxyPassword.generatePassword(10),
-                    MoxyPassword.generatePassword(10),
+                    : MoxyPassword.generatePassword(16),
+                    MoxyPassword.generatePassword(16),
                 ],
                 repeatingCharacters,
                 safe: false,
@@ -127,5 +127,12 @@ export default class MoxyPassword {
                 strength,
             }
             : { measurement, problems: rules, repeatingCharacters, safe: true, strength, sequences }
+    }
+    private static _random = (min: number, max: number) => {
+        const distance = max - min
+        const level = Math.ceil(Math.log(distance) / Math.log(256))
+        const num = parseInt(require('crypto').randomBytes(level).toString('hex'), 16)
+        const result = Math.floor(num / Math.pow(256, level) * (max - min + 1) + min)
+        return result
     }
 }

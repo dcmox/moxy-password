@@ -113,10 +113,10 @@ var MoxyPassword = /** @class */ (function () {
                 problems: rules,
                 recommendations: [
                     password.length <= 6
-                        ? password + '_' + MoxyPassword.generatePassword(8 - password.length - 1)
+                        ? password + '_' + MoxyPassword.generatePassword(10 - password.length - 1)
                             + Math.floor(Math.random() * 10)
-                        : MoxyPassword.generatePassword(10),
-                    MoxyPassword.generatePassword(10),
+                        : MoxyPassword.generatePassword(16),
+                    MoxyPassword.generatePassword(16),
                 ],
                 repeatingCharacters: repeatingCharacters,
                 safe: false,
@@ -128,8 +128,15 @@ var MoxyPassword = /** @class */ (function () {
     MoxyPassword.generatePassword = function (len, charset) {
         if (len === void 0) { len = 10; }
         if (charset === void 0) { charset = '!@#%=*_-~()+^23456789abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ'; }
-        return Array.from({ length: len }, function (c) { return charset.charAt(Math.floor(Math.random() * charset.length)); })
+        return Array.from({ length: len }, function (c) { return charset.charAt(MoxyPassword._random(0, charset.length)); })
             .join('');
+    };
+    MoxyPassword._random = function (min, max) {
+        var distance = max - min;
+        var level = Math.ceil(Math.log(distance) / Math.log(256));
+        var num = parseInt(require('crypto').randomBytes(level).toString('hex'), 16);
+        var result = Math.floor(num / Math.pow(256, level) * (max - min + 1) + min);
+        return result;
     };
     return MoxyPassword;
 }());
