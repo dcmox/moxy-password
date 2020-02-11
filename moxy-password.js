@@ -2,6 +2,8 @@
 exports.__esModule = true;
 // tslint:disable-next-line: no-var-requires
 var levenshtein = require('string-dist').levenshtein;
+// tslint:disable-next-line: quotemark
+var QWERTY_SEQUENCE = "`!@#$%^&*()_+qwertyuiop[]\\asdfghjkl;'zxcvbnm,./";
 var MoxyPassword = /** @class */ (function () {
     function MoxyPassword() {
     }
@@ -22,14 +24,18 @@ var MoxyPassword = /** @class */ (function () {
             rules.push('Password should contain at least one symbol.');
             strength -= 10;
         }
-        if (/[A-Z]/g.test(password) === false || /[a-z]/g.test(password) === false) {
+        if (/[A-Z]/g.test(password) === false ||
+            /[a-z]/g.test(password) === false) {
             rules.push('Password should contain at least one upper case and one lower case letter.');
             strength -= 5;
         }
         var threshold = Math.floor(password.length * patternThreshold);
         var repeatingCharacters = password.match(/(.)\1{2,}/g);
-        var repeatingCharacterLength = repeatingCharacters ? repeatingCharacters.join('').length : 0;
-        if (repeatingCharacters && repeatingCharacters.join('').length > threshold) {
+        var repeatingCharacterLength = repeatingCharacters
+            ? repeatingCharacters.join('').length
+            : 0;
+        if (repeatingCharacters &&
+            repeatingCharacters.join('').length > threshold) {
             rules.push('Password contains too many repeating characters and numbers.');
             strength -= 20;
         }
@@ -41,23 +47,69 @@ var MoxyPassword = /** @class */ (function () {
         var direction = -1;
         while (i < password.length) {
             if (start === -1) {
-                if (lowerPassword.charCodeAt(i) === lowerPassword.charCodeAt(i + 1) - 1) {
+                if (lowerPassword.charCodeAt(i) ===
+                    lowerPassword.charCodeAt(i + 1) - 1) {
                     start = i;
                     direction = -1;
                 }
-                else if (lowerPassword.charCodeAt(i) === lowerPassword.charCodeAt(i + 1) + 1) {
+                else if (lowerPassword.charCodeAt(i) ===
+                    lowerPassword.charCodeAt(i + 1) + 1) {
                     start = i;
                     direction = 1;
                 }
             }
             else {
-                if (direction === -1 && lowerPassword.charCodeAt(i) === lowerPassword.charCodeAt(i + 1) - 1
-                    || direction === 1 && lowerPassword.charCodeAt(i) === lowerPassword.charCodeAt(i + 1) + 1) {
+                if ((direction === -1 &&
+                    lowerPassword.charCodeAt(i) ===
+                        lowerPassword.charCodeAt(i + 1) - 1) ||
+                    (direction === 1 &&
+                        lowerPassword.charCodeAt(i) ===
+                            lowerPassword.charCodeAt(i + 1) + 1)) {
                     end = i + 2;
                 }
                 else {
                     if (start !== -1 && end !== -1) {
                         sequences.push(password.slice(start, end));
+                    }
+                    start = -1;
+                    end = -1;
+                }
+            }
+            i++;
+        }
+        i = 0;
+        while (i < password.length) {
+            if (start === -1) {
+                var cIndex = QWERTY_SEQUENCE.indexOf(lowerPassword[i]);
+                if (cIndex &&
+                    cIndex === QWERTY_SEQUENCE.indexOf(lowerPassword[i + 1]) - 1) {
+                    start = i;
+                    direction = -1;
+                }
+                else if (cIndex &&
+                    cIndex === QWERTY_SEQUENCE.indexOf(lowerPassword[i + 1]) + 1) {
+                    start = i;
+                    direction = 1;
+                }
+            }
+            else {
+                var cIndex = QWERTY_SEQUENCE.indexOf(lowerPassword[i]);
+                if ((direction === -1 &&
+                    cIndex &&
+                    cIndex ===
+                        QWERTY_SEQUENCE.indexOf(lowerPassword[i + 1]) -
+                            1) ||
+                    (direction === 1 &&
+                        cIndex &&
+                        cIndex ===
+                            QWERTY_SEQUENCE.indexOf(lowerPassword[i + 1]) + 1)) {
+                    end = i + 2;
+                }
+                else {
+                    if (start !== -1 && end !== -1) {
+                        if (sequences.indexOf(password.slice(start, end)) === -1) {
+                            sequences.push(password.slice(start, end));
+                        }
                     }
                     start = -1;
                     end = -1;
@@ -83,13 +135,15 @@ var MoxyPassword = /** @class */ (function () {
                     strength -= 20;
                     break;
                 }
-                else if (password.indexOf(data[key]) > -1 && password.length - data[key].length <= 6) {
+                else if (password.indexOf(data[key]) > -1 &&
+                    password.length - data[key].length <= 6) {
                     rules.push('Password contains a word or phrase associated with your account.');
                     strength -= 10;
                 }
             }
         }
-        if (sequenceLength === password.length || repeatingCharacterLength === password.length) {
+        if (sequenceLength === password.length ||
+            repeatingCharacterLength === password.length) {
             strength = 0;
         }
         if (strength >= 80 && strength < 100 && password.length > 20) {
@@ -98,7 +152,13 @@ var MoxyPassword = /** @class */ (function () {
         if (strength >= 80 && password.length > 30) {
             strength = 100;
         }
-        var measurement = ['dangerous', 'weak', 'average', 'good', 'strong'][Math.round(strength / 25)];
+        var measurement = [
+            'dangerous',
+            'weak',
+            'average',
+            'good',
+            'strong',
+        ][Math.round(strength / 25)];
         if (strength === 100 && password.length > 12) {
             measurement = 'really strong';
         }
@@ -108,13 +168,17 @@ var MoxyPassword = /** @class */ (function () {
                 measurement = 'unbreakable';
             }
         }
+        // tslint:disable: indent
         return strength <= 90
-            ? { measurement: measurement,
+            ? {
+                measurement: measurement,
                 problems: rules,
                 recommendations: [
                     password.length <= 6
-                        ? password + '_' + MoxyPassword.generatePassword(10 - password.length - 1)
-                            + Math.floor(Math.random() * 10)
+                        ? password +
+                            '_' +
+                            MoxyPassword.generatePassword(10 - password.length - 1) +
+                            Math.floor(Math.random() * 10)
                         : MoxyPassword.generatePassword(16),
                     MoxyPassword.generatePassword(16),
                 ],
@@ -123,19 +187,29 @@ var MoxyPassword = /** @class */ (function () {
                 sequences: sequences,
                 strength: strength
             }
-            : { measurement: measurement, problems: rules, repeatingCharacters: repeatingCharacters, safe: true, strength: strength, sequences: sequences };
+            : {
+                measurement: measurement,
+                problems: rules,
+                repeatingCharacters: repeatingCharacters,
+                safe: true,
+                strength: strength,
+                sequences: sequences
+            };
     };
     MoxyPassword.generatePassword = function (len, charset) {
         if (len === void 0) { len = 10; }
         if (charset === void 0) { charset = '!@#%=*_-~()+^23456789abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ'; }
-        return Array.from({ length: len }, function (c) { return charset.charAt(MoxyPassword._random(0, charset.length)); })
-            .join('');
+        return Array.from({ length: len }, function (c) {
+            return charset.charAt(MoxyPassword._random(0, charset.length));
+        }).join('');
     };
     MoxyPassword._random = function (min, max) {
         var distance = max - min;
         var level = Math.ceil(Math.log(distance) / Math.log(256));
-        var num = parseInt(require('crypto').randomBytes(level).toString('hex'), 16);
-        var result = Math.floor(num / Math.pow(256, level) * (max - min + 1) + min);
+        var num = parseInt(require('crypto')
+            .randomBytes(level)
+            .toString('hex'), 16);
+        var result = Math.floor((num / Math.pow(256, level)) * (max - min + 1) + min);
         return result;
     };
     return MoxyPassword;
