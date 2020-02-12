@@ -18,7 +18,7 @@ interface IMoxyPasswordResult {
 // tslint:disable-next-line: quotemark
 const QWERTY_SEQUENCE = "`!@#$%^&*()_+qwertyuiop[]\\asdfghjkl;'zxcvbnm,./"
 
-export default class MoxyPassword {
+class MoxyPassword {
 	public static generatePassword = (
 		len: number = 10,
 		charset: string = '!@#%=*_-~()+^23456789abcdefghijkmnopqrstuvwxyzABCDEFGHIJKLMNPQRSTUVWXYZ',
@@ -264,3 +264,5 @@ export default class MoxyPassword {
 		return result
 	}
 }
+
+module.exports = MoxyPassword

@@ -1,5 +1,3 @@
-"use strict";
-exports.__esModule = true;
 // tslint:disable-next-line: no-var-requires
 var levenshtein = require('string-dist').levenshtein;
 // tslint:disable-next-line: quotemark
@@ -214,4 +212,4 @@ var MoxyPassword = /** @class */ (function () {
     };
     return MoxyPassword;
 }());
-exports["default"] = MoxyPassword;
+module.exports = MoxyPassword;

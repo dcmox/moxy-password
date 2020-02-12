@@ -1,5 +1,5 @@
 import assert from 'assert'
-import MoxyPassword from '../moxy-password'
+const MoxyPassword = require('../moxy-password')
 
 describe('moxy-password test suite', () => {
 	it('should test the strength of a password and give the proper responses', () => {
